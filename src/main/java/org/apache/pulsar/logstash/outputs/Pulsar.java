@@ -11,6 +11,7 @@ import co.elastic.logstash.api.PluginHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.pulsar.client.api.CompressionType;
+import org.apache.pulsar.client.api.ClientBuilder;
 import org.apache.pulsar.client.api.ProducerBuilder;
 import org.apache.pulsar.client.api.PulsarClient;
 import org.apache.pulsar.client.api.PulsarClientException;
@@ -18,6 +19,7 @@ import org.apache.pulsar.client.impl.auth.oauth2.AuthenticationFactoryOAuth2;
 
 import java.io.ByteArrayOutputStream;
 import java.net.URL;
+import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -93,7 +95,7 @@ public class Pulsar implements Output {
     // TODO: sendTimeoutMs milliseconds 30000
 
     // all plugins must provide a constructor that accepts id, Configuration, and Context
-    public Pulsar(final String id, final Configuration configuration, final Context context) {
+    public Pulsar(final String id, final Configuration configuration, final Context context) throws MalformedURLException {
         // constructors should validate configuration options
         this.id = id;
         codec = configuration.get(CONFIG_CODEC);
@@ -117,7 +119,7 @@ public class Pulsar implements Output {
 
         try {
 
-            builder = PulsarClient.builder()
+            ClientBuilder builder = PulsarClient.builder()
                       .serviceUrl(serviceUrl);
             if (enableAuth == true) {
                 builder = builder.authentication(

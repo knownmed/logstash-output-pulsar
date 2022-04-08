@@ -45,3 +45,16 @@ https://github.com/streamnative/logstash-output-pulsar/releases
 ```
 bin/logstash-plugin install file://{PATH_TO}/logstash-output-pulsar-2.7.1.zip
 ```
+
+
+# Developing
+
+## Setting up `logstash-core`
+
+https://www.elastic.co/guide/en/logstash/current/java-codec-plugin.html
+
+## Building the gem zip
+
+```
+ORG_GRADLE_PROJECT_LOGSTASH_CORE_PATH=~/code/elastic/logstash/logstash-core ./gradlew gem
+```
