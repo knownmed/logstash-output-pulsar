@@ -14,8 +14,10 @@ import org.apache.pulsar.client.api.CompressionType;
 import org.apache.pulsar.client.api.ProducerBuilder;
 import org.apache.pulsar.client.api.PulsarClient;
 import org.apache.pulsar.client.api.PulsarClientException;
+import org.apache.pulsar.client.impl.auth.oauth2.AuthenticationFactoryOAuth2;
 
 import java.io.ByteArrayOutputStream;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -51,6 +53,15 @@ public class Pulsar implements Output {
     private static final PluginConfigSpec<Boolean> CONFIG_ENABLE_BATCHING =
             PluginConfigSpec.booleanSetting("enable_batching",true);
 
+    private static final PluginConfigSpec<Boolean> CONFIG_ENABLE_AUTH =
+        PluginConfigSpec.booleanSetting("enable_auth", false);
+    private static final PluginConfigSpec<String> CONFIG_ISSUER_URL =
+        PluginConfigSpec.stringSetting("issuerUrl", "");
+    private static final PluginConfigSpec<String> CONFIG_CREDENTIALS_URL =
+        PluginConfigSpec.stringSetting("credentialsUrl", "");
+    private static final PluginConfigSpec<String> CONFIG_AUDIENCE =
+        PluginConfigSpec.stringSetting("audience", "");
+
     private final CountDownLatch done = new CountDownLatch(1);
 
     private final String producerName;
@@ -72,6 +83,10 @@ public class Pulsar implements Output {
     private final boolean blockIfQueueFull;
     // enableBatching true/false
     private final boolean enableBatching;
+    private final boolean enableAuth;
+    private final URL issuerUrl;
+    private final URL credentialsUrl;
+    private final String audience;
 
     // TODO: batchingMaxPublishDelay milliseconds
 
@@ -94,11 +109,20 @@ public class Pulsar implements Output {
         blockIfQueueFull = configuration.get(CONFIG_BLOCK_IF_QUEUE_FULL);
         compressionType = configuration.get(CONFIG_COMPRESSION_TYPE);
 
+        enableAuth = configuration.get(CONFIG_ENABLE_AUTH);
+        issuerUrl = new URL(configuration.get(CONFIG_ISSUER_URL));
+        credentialsUrl = new URL(configuration.get(CONFIG_CREDENTIALS_URL));
+        audience = configuration.get(CONFIG_AUDIENCE);
+
         try {
 
-            client = PulsarClient.builder()
-                    .serviceUrl(serviceUrl)
-                    .build();
+            builder = PulsarClient.builder()
+                      .serviceUrl(serviceUrl);
+            if (enableAuth == true) {
+                builder = builder.authentication(
+                    AuthenticationFactoryOAuth2.clientCredentials(issuerUrl, credentialsUrl, audience));
+            }
+            client = builder.build();
             producerMap = new HashMap<>();
         } catch (PulsarClientException e) {
             logger.error("fail to create pulsar client", e);
