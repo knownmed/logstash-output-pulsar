@@ -110,6 +110,7 @@ public class Pulsar implements Output {
         compressionType = configuration.get(CONFIG_COMPRESSION_TYPE);
 
         enableAuth = configuration.get(CONFIG_ENABLE_AUTH);
+        // TODO if (enableAuth == true), check that the below configuration parameters aren't empty.
         issuerUrl = new URL(configuration.get(CONFIG_ISSUER_URL));
         credentialsUrl = new URL(configuration.get(CONFIG_CREDENTIALS_URL));
         audience = configuration.get(CONFIG_AUDIENCE);
