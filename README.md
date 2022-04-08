@@ -53,8 +53,12 @@ bin/logstash-plugin install file://{PATH_TO}/logstash-output-pulsar-2.7.1.zip
 
 https://www.elastic.co/guide/en/logstash/current/java-codec-plugin.html
 
+```
+git checkout -b 7.17 origin/7.17
+```
+
 ## Building the gem zip
 
 ```
-ORG_GRADLE_PROJECT_LOGSTASH_CORE_PATH=~/code/elastic/logstash/logstash-core ./gradlew gem
+ORG_GRADLE_PROJECT_LOGSTASH_CORE_PATH=~/code/elastic/logstash/logstash-core ORG_GRADLE_PROJECT_LOGSTASH_CORE_VERSION='7.17.3' ./gradlew gem
 ```
