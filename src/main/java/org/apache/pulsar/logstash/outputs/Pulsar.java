@@ -231,7 +231,11 @@ public class Pulsar implements Output {
                 CONFIG_PRODUCER_NAME,
                 CONFIG_COMPRESSION_TYPE,
                 CONFIG_ENABLE_BATCHING,
-                CONFIG_BLOCK_IF_QUEUE_FULL
+                CONFIG_BLOCK_IF_QUEUE_FULL,
+                CONFIG_ENABLE_AUTH,
+                CONFIG_ISSUER_URL,
+                CONFIG_CREDENTIALS_URL,
+                CONFIG_AUDIENCE
         ));
 
     }
